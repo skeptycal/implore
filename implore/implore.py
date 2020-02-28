@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
-""" implore.py - An even more desperate way to make requests for Humans. """
+""" implore.py - An even more desperate way to make requests for Humans.™ """
 """ GOALS:
     By creating this app, I wanted to answer these questions:
 
@@ -165,7 +165,7 @@ class WebPage(requests.Response):
             self.tags = Counter(self.text)
             return self.tags
 
-    def to_markdown(): pass
+    def to_markdown(self): pass
 
     def to_json(self): return json.dumps(self.text)
 
@@ -210,7 +210,8 @@ class WebPageSet(deque):
 
 class Text_Messaging():
 
-    def text(message: str,
+    def text(self,
+             message: str,
              cell: str = DEFAULT_CELL_NUMBER,
              verbose: bool = False) -> int:
         """ Return status of {message} sent to {cell}(verbose - give CLI feedback if True """
