@@ -83,10 +83,6 @@ if True:  # setup html parser
             DEFAULT_PARSER = 'html.parser'
 
 if True:  # Default constants
-    # * text messaging
-    DEFAULT_SCRIPT_PATH: str = os.getcwd() + "/sentMessage.scpt"
-    DEFAULT_CELL_NUMBER: str = '13616488261'
-
     # * time zones and scheduling
     USE_TZ: bool = False
     sch = BlockingScheduler()
@@ -100,11 +96,6 @@ if True:  # Default constants
     now: struct_time = gmtime()
 
 
-class Contact_List(list):
-    pass
-    # joe = Contact("Joe", "+555555555", "Somewhere Else")
-
-
 def db_print(*args, file=sys.stderr, **kwargs):
     """ Print messages to STDERR in debug mode (if <SET_DEBUG> is set) """
     if SET_DEBUG:
@@ -112,125 +103,6 @@ def db_print(*args, file=sys.stderr, **kwargs):
 
 
 # contact_list.save_to_file() # with open('list.txt') as p: # p = json.load(p) # print(p)
-
-class Error(Exception):
-    """ Custom Exception handler for Implore. """
-
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        Exception.__init__(self, *args, **kwargs)
-        return
-
-
-class WebPageError(TypeError):
-    """  # Exception raised for errors in the WebPage class. """
-    pass
-
-
-class WebPage(requests.Response):
-    """ A local representation of a webpage. This object is able to analyze itself, share data, and perform its duties unsupervised.
-
-    parameters
-
-    url: the source of the original page grab. Use the <refresh> command to get an updated version."""
-    # >>> r = requests.get('https://api.github.com/user',
-
-    def __init__(self, url):
-        super().__init__()
-        self.url: str = url
-        self.dirty: bool = True
-        self.last_status: int = 0
-        self.timestamp: struct_time = gmtime()
-        # self.tags = {}
-        # self.auth: Tuple[str, str] = ('user', 'pass')
-        # auth = ('user', 'pass')
-
-    def get_url_content(self, url: str) -> str:
-        """ Return decoded contents from <url> using default parameters. """
-        self = requests.get(url)
-        self.history.append()
-        self.last_status = self.status_code
-        if self.last_status == 200:
-            return self.text
-        else:
-            return ''
-
-    def tag_find(self, tag_name: str, attrs_pass: Dict[Any, Any], parser_pass: str = DEFAULT_PARSER) -> List[Any]:
-        """ Find matching tags from url. """
-        soup = BeautifulSoup(self.text, features=DEFAULT_PARSER)
-        return soup.findAll(name=tag_name, attrs=attrs_pass)
-
-    def tag_list(self, tag_name: str):
-        if self.dirty:
-            self.tags = Counter(self.text)
-            return self.tags
-
-    def to_markdown(self): pass
-
-    def to_json(self): return json.dumps(self.text)
-
-    def stats(self): pass
-
-    def soup(self): pass  # return BeautifulSoup()
-
-
-class WebPageSet(deque):
-    """ Stores and maintains a set of web pages. """
-    DEFAULT_WEBPAGESET_SIZE = 2000  # maximum number of pages
-    # TODO this should be 'maximum size' ... not count
-    # ... and class should check it's own size
-
-    def __init__(self, iterable: MutableSequence, maxlen: int = 0, check_links: bool = True, image_storage: str = ''):
-        if not maxlen or maxlen < 1:
-            maxlen = DEFAULT_WEBPAGESET_SIZE
-        self.check_links = check_links
-        self.store = True if image_storage else False
-        self.image_storage = image_storage
-        super().__init__(iterable, maxlen)
-
-    def count(self):
-        """ count tags, emails, ... whatever from the entire set """
-        pass
-
-    def common(self):
-        """ find items that this pageset has in common. """
-        pass
-
-    def append(self, x):
-        if isinstance(x, WebPage):
-            super().append(x)
-        else:
-            if SET_DEBUG:
-                db_print()
-            else:
-                raise (WebPageError)
-
-    def size_check(self): print(self.__sizeof__())
-
-
-class Text_Messaging():
-
-    def text(self,
-             message: str,
-             cell: str = DEFAULT_CELL_NUMBER,
-             verbose: bool = False) -> int:
-        """ Return status of {message} sent to {cell}(verbose - give CLI feedback if True """
-        script_text = "osascript {} {} '{}'".format(DEFAULT_SCRIPT_PATH, cell, message)
-        db_print('script_text: ', script_text)
-        try:
-            result = os.system(script_text)
-        except:
-            result = -1
-        finally:
-            db_print('result: ', result)
-            return result
-
-    def test_text(message: str = 'A python program just sent you a message ...'):
-        """ Send a test message using <text> """
-        test_cell_number = DEFAULT_CELL_NUMBER
-        db_print(f"{message=}")
-        result = text(message=message, verbose=SET_DEBUG)
-        print(f"{result=}")
 
 
 @app.route("/")
